@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="row">
+  <div class="col-sm-12">
+    <form ng-submit="submit(newVoteForm)" name="newVoteForm" novalidate>
+      <div class="form-group">
+        <label for="newVote">Create a new vote</label>
+        <input type="text" class="form-control" required name="vote" ng-model="vote" id="newVote" placeholder="new vote">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>  </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <ul class="list-group">
+        <li ng-repeat="vote in votes" class="list-group-item"> {{vote.label}}
+          <a ng-click="activate(vote)"
+            ng-class="{'btn-primary': vote.active, 'btn-secondary': !vote.active}"
+            class="pull-right btn btn-xs">Activate</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

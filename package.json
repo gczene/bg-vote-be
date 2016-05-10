@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/gczene/bg-vote-be#readme",
   "dependencies": {
-    "express": "^4.13.4"
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "monk": "^1.0.1"
   }
 }
