@@ -1,0 +1,13 @@
+@keyframes _pulse {
+    0%   {background-color: white;}
+    20%  {background-color: white;}
+    40%  {background-color: yellow;}
+    60%  {background-color: white;}
+    80%  {background-color: yellow;}
+    100% {background-color: white;}
+}
+
+.pulse {
+  animation-name: _pulse;
+  animation-duration: .7s;
+}

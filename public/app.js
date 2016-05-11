@@ -27,8 +27,10 @@ angular.module('app.services.localStorage', [])
   }]);
 
 angular.module('app.controllers.home', [])
-  .controller('homeCtrl', ['$scope', 'voteResource', 'localStorageService', function ($scope, voteResource, localStorageService) {
+  .controller('homeCtrl', ['$scope', 'voteResource', 'localStorageService', '$timeout', function ($scope, voteResource, localStorageService, $timeout) {
     'use strict';
+    $scope.pulseYes = false;
+    $scope.pulseNo = false;
     $scope.submitted = true;
     $scope.loading = true;
     voteResource.query({active: true})
@@ -43,6 +45,22 @@ angular.module('app.controllers.home', [])
       localStorageService.set($scope.vote._id);
       $scope.vote.$vote({todo: value});
     };
+    $scope.$watch('vote.votes.yes', function (n, oldValue) {
+      if (oldValue) {
+        $scope.pulseYes = true;
+        $timeout(function () {
+          $scope.pulseYes = false;
+        }, 1000);
+      }
+    });
+    $scope.$watch('vote.votes.no', function (n, oldValue) {
+      if (oldValue) {
+        $scope.pulseNo = true;
+        $timeout(function () {
+          $scope.pulseNo = false;
+        }, 1000);
+      }
+    });
     socket.on('vote', function (data) {
       $scope.$apply(function () {
         $scope.vote.votes.yes = data.votes.yes;
