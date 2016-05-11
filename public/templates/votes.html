@@ -16,6 +16,9 @@
     <div class="col-xs-12">
       <ul class="list-group">
         <li ng-repeat="vote in votes" class="list-group-item"> {{vote.label}}
+          <span class="badge" style="width: 100px;">
+            yes: {{vote.votes.yes}} / no: {{vote.votes.no}}
+          </span>
           <a ng-click="activate(vote)"
             ng-class="{'btn-primary': vote.active, 'btn-secondary': !vote.active}"
             class="pull-right btn btn-xs">Activate</a></li>
