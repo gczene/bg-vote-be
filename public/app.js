@@ -45,8 +45,8 @@ angular.module('app.controllers.home', [])
     };
     socket.on('vote', function (data) {
       $scope.$apply(function () {
-        $scope.vote.yes = data.votes.yes;
-        $scope.vote.no = data.votes.no;
+        $scope.vote.votes.yes = data.votes.yes;
+        $scope.vote.votes.no = data.votes.no;
       });
     });
   }]);
