@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-var PORT = process.env.BG_VOTE_PORT || 3000;
+var PORT = process.env.NODE_ENV === 'development' ? 3000 : 80;
 var bodyParser = require('body-parser');
 var db = require('./lib/monk');
 
