@@ -1,4 +1,4 @@
-var socket = io.connect("http://10.0.1.11:3000/");
+var socket = io.connect("//" + window.location.host + "/");
 angular.module('APP', ['ui.router', 'ngResource', 'app.routes', 'app.services', 'app.resources', 'app.controllers']);
 
 angular.module('app.controllers', [
@@ -45,8 +45,8 @@ angular.module('app.controllers.home', [])
     };
     socket.on('vote', function (data) {
       $scope.$apply(function () {
-        $scope.yes = data.votes.yes;
-        $scope.no = data.votes.no;
+        $scope.vote.yes = data.votes.yes;
+        $scope.vote.no = data.votes.no;
       });
     });
   }]);
