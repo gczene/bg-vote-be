@@ -1,28 +1,54 @@
-angular.module('APP', ['ui.router', 'ngResource', 'app.routes', 'app.resources', 'app.controllers']);
+var socket = io.connect("http://10.0.1.11:3000/");
+angular.module('APP', ['ui.router', 'ngResource', 'app.routes', 'app.services', 'app.resources', 'app.controllers']);
 
 angular.module('app.controllers', [
   'app.controllers.votes',
   'app.controllers.home'
 ]);
 
+angular.module('app.services', [
+  'app.services.localStorage'
+]);
+
 angular.module('app.resources', [
     'app.resources.vote'
 ]);
 
+angular.module('app.services.localStorage', [])
+  .factory('localStorageService', ['$window', function ($window) {
+    return {
+      set: function (id) {
+        $window.localStorage.setItem('bg-vote-' + id, 'true');
+      },
+      get: function (id) {
+        return $window.localStorage.getItem('bg-vote-' + id);
+      }
+    };
+  }]);
 
 angular.module('app.controllers.home', [])
-  .controller('homeCtrl', ['$scope', 'voteResource', function ($scope, voteResource) {
+  .controller('homeCtrl', ['$scope', 'voteResource', 'localStorageService', function ($scope, voteResource, localStorageService) {
     'use strict';
+    $scope.submitted = true;
     $scope.loading = true;
     voteResource.query({active: true})
       .$promise
       .then(function (votes) {
         $scope.loading = false;
         $scope.vote = votes && votes[0];
+        $scope.submitted = localStorageService.get($scope.vote._id);
       });
     $scope.submitVote = function (value) {
+      $scope.submitted = true;
+      localStorageService.set($scope.vote._id);
       $scope.vote.$vote({todo: value});
     };
+    socket.on('vote', function (data) {
+      $scope.$apply(function () {
+        $scope.yes = data.votes.yes;
+        $scope.no = data.votes.no;
+      });
+    });
   }]);
 
 angular.module('app.controllers.votes', [])

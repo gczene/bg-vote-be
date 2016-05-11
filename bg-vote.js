@@ -1,8 +1,11 @@
 var express = require('express');
 var app = express();
+var server = require('http').createServer(app);
 var PORT = process.env.BG_VOTE_PORT || 3000;
 var bodyParser = require('body-parser');
 var db = require('./lib/monk');
+
+var io = require('socket.io')(server);
 
 app.use(bodyParser.json());
 
@@ -10,7 +13,7 @@ app.use(express.static('public'));
 
 app.post('/api/votes', function (req, res) {
   var vote = db.get('votes');
-  vote.insert({label: req.body.vote, registeredAt: new Date(), active: false}, function (err, doc) {
+  vote.insert({label: req.body.vote, registeredAt: new Date(), active: false, votes: {yes: 0, no: 0}}, function (err, doc) {
     if (err) {
       res.send(err);
     } else {
@@ -36,16 +39,25 @@ app.post('/api/votes/:id/vote/:todo', function (req, res) {
   var inc = req.params.todo === 'inc' ? {'votes.yes': 1} : {'votes.no': 1},
     votes = db.get('votes');
 
-  votes.update({_id: req.params.id}, {$inc: inc}, function (err, doc) {
+  votes.findAndModify({_id: req.params.id}, {$inc: inc}, function (err, doc) {
     if (err) {
       res.status(500).send(err);
     } else {
+      if (req.params.todo === 'inc') {
+        doc.votes.yes += 1;
+      } else {
+        doc.votes.no += 1;
+      }
+      io.emit('vote', {votes: doc.votes});
       res.send(doc);
     }
   });
 
 });
 
+app.post('/socket.io', function (req, res) {
+  res.send({});
+});
 app.put('/api/votes/:id', function (req, res) {
   var votes = db.get('votes'),
     vote = req.body;
@@ -64,6 +76,10 @@ app.put('/api/votes/:id', function (req, res) {
   });
 });
 
-app.listen(PORT, function () {
+io.on('connection', function(){
+  console.log('---> connection');
+});
+
+server.listen(PORT, function () {
   console.log('Example app listening on port ' + PORT + '!');
 });
