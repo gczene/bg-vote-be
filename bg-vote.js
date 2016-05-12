@@ -13,7 +13,7 @@ app.use(express.static('public'));
 
 app.post('/api/votes', function (req, res) {
   var vote = db.get('votes');
-  vote.insert({label: req.body.vote, registeredAt: new Date(), active: false, votes: {yes: 0, no: 0}}, function (err, doc) {
+  vote.insert({label: req.body.vote.label, registeredAt: new Date(), active: false, votes: {yes: 0, no: 0}, type: req.body.vote.type}, function (err, doc) {
     if (err) {
       res.send(err);
     } else {

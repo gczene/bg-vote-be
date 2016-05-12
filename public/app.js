@@ -38,7 +38,16 @@ angular.module('app.controllers.home', [])
       .then(function (votes) {
         $scope.loading = false;
         $scope.vote = votes && votes[0];
-        $scope.submitted = localStorageService.get($scope.vote._id);
+        if ($scope.vote) {
+          if ($scope.vote.type === 'ab') {
+            $scope.option1 = 'A';
+            $scope.option2 = 'B';
+          } else {
+            $scope.option1 = 'Yes';
+            $scope.option2 = 'No';
+          }
+          $scope.submitted = localStorageService.get($scope.vote._id);
+        }
       });
     $scope.submitVote = function (value) {
       $scope.submitted = true;
@@ -75,6 +84,7 @@ angular.module('app.controllers.votes', [])
     var loadAll = function () {
       $scope.votes = voteResource.query();
     };
+    $scope.vote = {type: 'yesno'};
     loadAll();
     $scope.submit = function (form) {
       if (form.$valid) {
@@ -82,7 +92,7 @@ angular.module('app.controllers.votes', [])
           .$promise
           .then(function () {
             loadAll();
-            $scope.vote = '';
+            $scope.vote = {type: 'yesno'};
           });
       }
     };

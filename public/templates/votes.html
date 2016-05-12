@@ -4,7 +4,15 @@
     <form ng-submit="submit(newVoteForm)" name="newVoteForm" novalidate>
       <div class="form-group">
         <label for="newVote">Create a new vote</label>
-        <input type="text" class="form-control" required name="vote" ng-model="vote" id="newVote" placeholder="new vote">
+        <input type="text" class="form-control" required name="vote" ng-model="vote.label" id="newVote" placeholder="new vote">
+      </div>
+      <div class="form-group">
+        <label class="radio-inline">
+          <input type="radio" ng-model="vote.type" name="qType" value="yesno"> Yes - no
+        </label>
+        <label class="radio-inline">
+          <input type="radio" ng-model="vote.type" name="qType" value="ab"> A - B
+        </label>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
@@ -16,8 +24,11 @@
     <div class="col-xs-12">
       <ul class="list-group">
         <li ng-repeat="vote in votes" class="list-group-item"> {{vote.label}}
-          <span class="badge" style="width: 100px;">
+          <span class="badge" style="width: 100px;" ng-if="vote.type==='yesno'">
             yes: {{vote.votes.yes}} / no: {{vote.votes.no}}
+          </span>
+          <span class="badge" style="width: 100px;" ng-if="vote.type==='ab'">
+            A: {{vote.votes.yes}} / B: {{vote.votes.no}}
           </span>
           <a ng-click="activate(vote)"
             ng-class="{'btn-primary': vote.active, 'btn-secondary': !vote.active}"
