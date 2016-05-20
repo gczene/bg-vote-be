@@ -7,6 +7,12 @@ var bodyParser = require('body-parser');
 var db = require('./lib/monk');
 var releases = require('./lib/releases');
 
+
+app.get('/', function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
 app.use(bodyParser.json());
 
 app.use(express.static('public'));
