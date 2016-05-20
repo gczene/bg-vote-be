@@ -77,6 +77,7 @@ app.put('/api/votes/:id', function (req, res) {
 });
 
 app.post('/releases', releases.post);
+app.get('/releases', releases.get);
 
 io.on('connection', function(){
   console.log('---> connection');
