@@ -8,10 +8,16 @@ var db = require('./lib/monk');
 var releases = require('./lib/releases');
 
 
-app.get('/', function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    // res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next();
+app.all('*', function (req, res, next) {
+  if (req.get('Referrer') !== 'http://localhost:4200/') {
+    throw 404;
+  }
+
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  next();
+
 });
 app.use(bodyParser.json());
 
