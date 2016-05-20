@@ -1,11 +1,11 @@
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
+var io = require('./lib/io')(server);
 var PORT = process.env.NODE_ENV === 'development' ? 3000 : 80;
 var bodyParser = require('body-parser');
 var db = require('./lib/monk');
-
-var io = require('socket.io')(server);
+var releases = require('./lib/releases');
 
 app.use(bodyParser.json());
 
@@ -75,6 +75,8 @@ app.put('/api/votes/:id', function (req, res) {
       }
   });
 });
+
+app.post('/releases', releases.post);
 
 io.on('connection', function(){
   console.log('---> connection');
